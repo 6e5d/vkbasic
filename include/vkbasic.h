@@ -10,7 +10,7 @@
 
 typedef struct {
 	VkInstance instance;
-	VkCommandBuffer command_buffer;
+	VkCommandBuffer cbuf;
 	VkDebugUtilsMessengerEXT messenger;
 	VkSurfaceKHR surface;
 	VkPhysicalDevice pdev;

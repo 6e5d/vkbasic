@@ -6,4 +6,4 @@ typedef struct {
 	VkCommandPool cpool;
 } VkbasicDqc;
 
-VkbasicDqc vkbasic_device(VkPhysicalDevice pdev);
+VkbasicDqc vkbasic_device(VkPhysicalDevice pdev, uint32_t family_idx);

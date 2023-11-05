@@ -54,16 +54,16 @@ VkbasicSwapchain* vkbasic_swapchain_new(
 }
 
 void vkbasic_swapchain_destroy(
-	VkbasicSwapchain *swapchain,
+	VkbasicSwapchain* vs,
 	VkDevice device,
 	VkCommandPool cpool
 ) {
-	VkbasicFramebufferImage* elements = swapchain->elements;
-	for (uint32_t i = 0; i < swapchain->image_count; i++) {
+	VkbasicFramebufferImage* elements = vs->elements;
+	for (uint32_t i = 0; i < vs->image_count; i++) {
 		vkDestroyFramebuffer(device, elements[i].framebuffer, NULL);
 		vkDestroyImageView(device, elements[i].imageview, NULL);
 	}
-	free(swapchain->elements);
-	vkDestroySwapchainKHR(device, swapchain->swapchain, NULL);
-	free(swapchain);
+	free(elements);
+	vkDestroySwapchainKHR(device, vs->swapchain, NULL);
+	free(vs);
 }

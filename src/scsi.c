@@ -1,5 +1,4 @@
 #include <assert.h>
-#include <stdio.h>
 #include <stdbool.h>
 #include <vulkan/vulkan.h>
 
@@ -11,7 +10,6 @@ VkbasicScsi vkbasic_scsi(
 	VkSurfaceKHR surface
 ) {
 	VkbasicScsi result;
-	printf("scsi sizeof: %zu\n", sizeof(VkbasicScsi));
 	vkbasic_check(vkGetPhysicalDeviceSurfaceCapabilitiesKHR(
 		pdev, surface, &result.caps));
 	uint32_t formatCount;

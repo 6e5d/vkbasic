@@ -1,16 +1,16 @@
-#include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
 #include <vulkan/vulkan.h>
 
 #include "../include/vkbasic.h"
 #include "../include/device.h"
-#include "../include/physdevice.h"
+#include "../include/pdev.h"
 #include "../include/semaphore.h"
 #include "../include/instance.h"
 #include "../include/validation.h"
 #include "../include/swapchain.h"
 #include "../include/scsi.h"
+#include "../include/cbuf.h"
 #include "../include/common.h"
 
 Vkbasic* vkbasic_new(
@@ -18,25 +18,18 @@ Vkbasic* vkbasic_new(
 	VkSurfaceKHR surface
 ) {
 	Vkbasic* v = malloc(sizeof(Vkbasic));
-	vkbasic_validation_new(instance, &v->messenger);
+	v->messenger = vkbasic_validation_new(instance);
 	v->instance = instance;
 	v->surface = surface;
-	v->pdev = vkbasic_pdev_selector(v->instance);
-	VkbasicDqc dqc = vkbasic_device(v->pdev);
+	uint32_t family_idx;
+	v->pdev = vkbasic_pdev_selector(instance, surface, &family_idx);
+	VkbasicDqc dqc = vkbasic_device(v->pdev, family_idx);
 	v->device = dqc.device;
 	v->cpool = dqc.cpool;
 	v->queue = dqc.queue;
 	v->vs = NULL;
 	v->scsi = vkbasic_scsi(v->pdev, v->surface);
-	{
-		VkCommandBufferAllocateInfo allocInfo = {
-			.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO,
-			.commandPool = v->cpool,
-			.commandBufferCount = 1,
-			.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY,
-		};
-		vkAllocateCommandBuffers(v->device, &allocInfo, &v->command_buffer);
-	}
+	v->cbuf = vkbasic_cbuf_new(v->cpool, v->device);
 	v->image_available = vkbasic_semaphore(v->device);
 	v->render_finished = vkbasic_semaphore(v->device);
 	v->fence = vkbasic_fence(v->device);
@@ -52,7 +45,7 @@ void vkbasic_present(Vkbasic* vb, uint32_t* index) {
 		.pWaitSemaphores = &vb->image_available,
 		.pWaitDstStageMask = &wait_stage,
 		.commandBufferCount = 1,
-		.pCommandBuffers = &vb->command_buffer,
+		.pCommandBuffers = &vb->cbuf,
 		.signalSemaphoreCount = 1,
 		.pSignalSemaphores = &vb->render_finished,
 	};
@@ -111,12 +104,11 @@ void vkbasic_destroy(Vkbasic* v) {
 	vkDestroySemaphore(v->device, v->image_available, NULL);
 	vkDestroySemaphore(v->device, v->render_finished, NULL);
 	vkbasic_swapchain_destroy(v->vs, v->device, v->cpool);
-	vkFreeCommandBuffers(v->device, v->cpool, 1, &v->command_buffer);
+	vkFreeCommandBuffers(v->device, v->cpool, 1, &v->cbuf);
 	vkDestroyCommandPool(v->device, v->cpool, NULL);
 	vkDestroyDevice(v->device, NULL);
 	vkDestroySurfaceKHR(v->instance, v->surface, NULL);
-	vkbasic_validation_del(v->instance, v->messenger);
+	vkbasic_validation_destroy(v->instance, v->messenger);
 	vkDestroyInstance(v->instance, NULL);
-	free(v->vs);
 	free(v);
 }
