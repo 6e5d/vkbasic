@@ -25,12 +25,10 @@ Vkbasic* vkbasic_new(
 	v->pdev = vkbasic_pdev_selector(instance, surface, &family_idx);
 	vkbasic_depth_format(v->pdev, &v->depth_format);
 	vkGetPhysicalDeviceMemoryProperties(v->pdev, &v->pdev_memprop);
-	VkbasicDqc dqc = vkbasic_device(v->pdev, family_idx);
-	v->device = dqc.device;
-	v->cpool = dqc.cpool;
-	v->queue = dqc.queue;
-	v->vs = NULL;
 	v->scsi = vkbasic_scsi(v->pdev, v->surface);
+	vkbasic_device(&v->device, &v->queue, &v->cpool, v->pdev, family_idx);
+
+	v->vs.swapchain = VK_NULL_HANDLE;
 	v->cbuf = vkbasic_cbuf_new(v->cpool, v->device);
 	v->image_available = vkbasic_semaphore(v->device);
 	v->render_finished = vkbasic_semaphore(v->device);
@@ -57,7 +55,7 @@ void vkbasic_present(Vkbasic* vb, uint32_t* index) {
 		.waitSemaphoreCount = 1,
 		.pWaitSemaphores = &vb->render_finished,
 		.swapchainCount = 1,
-		.pSwapchains = &vb->vs->swapchain,
+		.pSwapchains = &vb->vs.swapchain,
 		.pImageIndices = index,
 	};
 	VkResult result = vkQueuePresentKHR(vb->queue, &presentInfo);
@@ -71,7 +69,7 @@ void vkbasic_next_index(Vkbasic* vb, uint32_t* index) {
 	vkbasic_check(vkResetFences(vb->device, 1, &vb->fence));
 	VkResult result = vkAcquireNextImageKHR(
 		vb->device,
-		vb->vs->swapchain,
+		vb->vs.swapchain,
 		UINT64_MAX,
 		vb->image_available,
 		NULL,
@@ -88,10 +86,20 @@ void vkbasic_swapchain_update(
 	uint32_t width,
 	uint32_t height
 ) {
-	if (v->vs != NULL) {
-		vkbasic_swapchain_destroy(v->vs, v->device, v->cpool);
+	if (v->vs.swapchain != VK_NULL_HANDLE) {
+		vkbasic_swapchain_destroy(&v->vs, v->device, v->cpool);
+		vkbasic_image_destroy(&v->vs.depth, v->device);
 	}
-	v->vs = vkbasic_swapchain_new(
+	vkbasic_image_new(
+		&v->vs.depth,
+		v->device,
+		v->pdev_memprop,
+		width,
+		height,
+		v->depth_format
+	);
+	vkbasic_swapchain_new(
+		&v->vs,
 		&v->scsi,
 		v->device,
 		v->surface,
@@ -105,7 +113,8 @@ void vkbasic_destroy(Vkbasic* v) {
 	vkDestroyFence(v->device, v->fence, NULL);
 	vkDestroySemaphore(v->device, v->image_available, NULL);
 	vkDestroySemaphore(v->device, v->render_finished, NULL);
-	vkbasic_swapchain_destroy(v->vs, v->device, v->cpool);
+	vkbasic_image_destroy(&v->vs.depth, v->device);
+	vkbasic_swapchain_destroy(&v->vs, v->device, v->cpool);
 	vkFreeCommandBuffers(v->device, v->cpool, 1, &v->cbuf);
 	vkDestroyCommandPool(v->device, v->cpool, NULL);
 	vkDestroyDevice(v->device, NULL);

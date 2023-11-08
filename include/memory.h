@@ -1,4 +1,5 @@
 uint32_t vkbasic_memory_type_index(
-	uint32_t type,
-	VkMemoryPropertyFlags props
+	VkPhysicalDeviceMemoryProperties pdev_memprop,
+	VkMemoryPropertyFlags props,
+	uint32_t type
 );

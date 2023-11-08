@@ -21,11 +21,24 @@ void vkbasic_swapchain_destroy(
 	VkCommandPool cpool
 );
 
-VkbasicSwapchain* vkbasic_swapchain_new(
+void vkbasic_swapchain_new(
+	VkbasicSwapchain* vs,
 	VkbasicScsi* scsi,
 	VkDevice device,
 	VkSurfaceKHR surface,
 	VkRenderPass renderpass,
+	uint32_t width,
+	uint32_t height
+);
+
+VkbasicFramebufferImage* vkbasic_framebuffer(
+	VkDevice device,
+	VkbasicSwapchain* vs,
+	VkRenderPass renderpass,
+	VkFormat format,
+	VkImageView depthstencil,
+	// input min_image_count, modified into actual
+	uint32_t* image_count,
 	uint32_t width,
 	uint32_t height
 );

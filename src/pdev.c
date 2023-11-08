@@ -9,7 +9,7 @@
 #include "../include/common.h"
 #include "../include/pdev.h"
 
-bool vkbasic_depth_format(
+void vkbasic_depth_format(
 	VkPhysicalDevice pdev,
 	VkFormat *select
 ) {
@@ -29,11 +29,12 @@ bool vkbasic_depth_format(
 			VK_FORMAT_FEATURE_DEPTH_STENCIL_ATTACHMENT_BIT)
 		{
 			*select = format;
-			printf("selected depth format: %d", *select);
-			return false;
+			printf("selected depth format: %d\n", *select);
+			return;
 		}
 	}
-	return true;
+	printf("no suitable depth format\n");
+	exit(1);
 }
 
 static bool check_device_surface_support(

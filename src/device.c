@@ -4,8 +4,13 @@
 #include "../include/device.h"
 #include "../include/common.h"
 
-VkbasicDqc vkbasic_device(VkPhysicalDevice pdev, uint32_t family_idx) {
-	VkbasicDqc dqc;
+void vkbasic_device(
+	VkDevice* device,
+	VkQueue* queue,
+	VkCommandPool* cpool,
+	VkPhysicalDevice pdev,
+	uint32_t family_idx
+) {
 	const char* const exts[] = { "VK_KHR_swapchain" };
 	const char* const layers[] = { "VK_LAYER_KHRONOS_validation" };
 
@@ -25,18 +30,17 @@ VkbasicDqc vkbasic_device(VkPhysicalDevice pdev, uint32_t family_idx) {
 		.enabledLayerCount = sizeof(layers) / sizeof(const char*),
 		.ppEnabledLayerNames = layers,
 	};
-	vkbasic_check(vkCreateDevice(pdev, &info, NULL, &dqc.device));
-	vkGetDeviceQueue(dqc.device, family_idx, 0, &dqc.queue);
+	vkbasic_check(vkCreateDevice(pdev, &info, NULL, device));
+	vkGetDeviceQueue(*device, family_idx, 0, queue);
 	VkCommandPoolCreateInfo cpool_info = {
 		.sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO,
 		.queueFamilyIndex = family_idx,
 		.flags = VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT,
 	};
 	vkbasic_check(vkCreateCommandPool(
-		dqc.device,
+		*device,
 		&cpool_info,
 		NULL,
-		&dqc.cpool
+		cpool
 	));
-	return dqc;
 }

@@ -9,8 +9,9 @@ uint32_t vkbasic_memory_type_index(
 ) {
 	for (uint32_t i = 0; i < pdev_memprop.memoryTypeCount; i++) {
 		if ((type & 1) == 1) {
-			if ((pdev_memprop.memoryTypes[i].propertyFlags &
-				props) == props) {
+			VkMemoryType* ty = &pdev_memprop.memoryTypes[i];
+			// printf("%d %d\n", props, ty->propertyFlags);
+			if ((ty->propertyFlags & props) == props) {
 				return i;
 			}
 		}

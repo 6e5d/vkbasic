@@ -1,7 +1,7 @@
 #include <vulkan/vulkan.h>
 
-#include "../include/image.h"
 #include "../include/common.h"
+#include "../include/image.h"
 #include "../include/memory.h"
 
 void vkbasic_create_imageview(
@@ -33,9 +33,10 @@ void vkbasic_create_imageview(
 	));
 }
 
-void vkbasic_create_image(
+void vkbasic_image_new(
 	VkbasicImage* output,
 	VkDevice device,
+	VkPhysicalDeviceMemoryProperties pdev_memprop,
 	uint32_t width,
 	uint32_t height,
 	VkFormat format
@@ -65,8 +66,9 @@ void vkbasic_create_image(
 		.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO,
 		.allocationSize = reqs.size,
 		.memoryTypeIndex = vkbasic_memory_type_index(
-			reqs.memoryTypeBits,
-			VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT
+			pdev_memprop,
+			VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT,
+			reqs.memoryTypeBits
 		),
 	};
 	vkbasic_check(vkAllocateMemory(device, &alloc, NULL, &output->memory));
@@ -83,4 +85,10 @@ void vkbasic_create_image(
 		format,
 		VK_IMAGE_ASPECT_DEPTH_BIT | VK_IMAGE_ASPECT_STENCIL_BIT
 	);
+}
+
+void vkbasic_image_destroy(VkbasicImage* image, VkDevice device) {
+	vkDestroyImageView(device, image->imageview, NULL);
+	vkFreeMemory(device, image->memory, NULL);
+	vkDestroyImage(device, image->image, NULL);
 }

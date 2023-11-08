@@ -16,11 +16,13 @@ typedef struct {
 	VkPhysicalDevice pdev;
 	VkFormat depth_format;
 	VkPhysicalDeviceMemoryProperties pdev_memprop;
+	VkbasicScsi scsi;
 	VkDevice device;
 	VkQueue queue;
 	VkCommandPool cpool;
-	VkbasicScsi scsi;
-	VkbasicSwapchain* vs;
+
+	VkbasicImage depthstencil;
+	VkbasicSwapchain vs;
 	VkSemaphore image_available;
 	VkSemaphore render_finished;
 	VkFence fence;

@@ -5,17 +5,17 @@
 
 typedef struct {
 	VkImage image;
-	VkImageView imageview;
 	VkFramebuffer framebuffer;
+	// first image comes from the swapchain image
+	// thus has to be manually destroyed
+	// second image is copied from VkbasicSwapchain.depth.imageview
+	VkImageView attachments[2];
 } VkbasicFramebufferImage;
 
-VkbasicFramebufferImage* vkbasic_framebuffer(
+VkFramebuffer create_framebuffer(
 	VkDevice device,
-	VkSwapchainKHR swapchain,
 	VkRenderPass renderpass,
-	VkFormat format,
-	// input min_image_count, modified into actual
-	uint32_t* image_count,
+	VkImageView* attachments,
 	uint32_t width,
 	uint32_t height
 );

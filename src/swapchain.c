@@ -1,3 +1,4 @@
+#include <assert.h>
 #include <vulkan/vulkan.h>
 #include <stdlib.h>
 #include <stdint.h>
@@ -7,7 +8,8 @@
 #include "../include/framebuffer.h"
 #include "../include/common.h"
 
-VkbasicSwapchain* vkbasic_swapchain_new(
+void vkbasic_swapchain_new(
+	VkbasicSwapchain* vs,
 	VkbasicScsi* scsi,
 	VkDevice device,
 	VkSurfaceKHR surface,
@@ -15,7 +17,6 @@ VkbasicSwapchain* vkbasic_swapchain_new(
 	uint32_t width,
 	uint32_t height
 ) {
-	VkbasicSwapchain* result = malloc(sizeof(VkbasicSwapchain));
 	uint32_t min_image_count;
 	if (scsi->caps.minImageCount + 1 < scsi->caps.maxImageCount) {
 		min_image_count = scsi->caps.minImageCount + 1;
@@ -39,18 +40,18 @@ VkbasicSwapchain* vkbasic_swapchain_new(
 		.clipped = 1,
 	};
 	vkbasic_check(vkCreateSwapchainKHR(
-		device, &info, NULL, &result->swapchain));
-	result->elements = vkbasic_framebuffer(
+		device, &info, NULL, &vs->swapchain));
+	vs->elements = vkbasic_framebuffer(
 		device,
-		result->swapchain,
+		vs,
 		renderpass,
 		scsi->format.format,
+		vs->depth.imageview,
 		&min_image_count,
 		width,
 		height
 	);
-	result->image_count = min_image_count;
-	return result;
+	vs->image_count = min_image_count;
 }
 
 void vkbasic_swapchain_destroy(
@@ -61,9 +62,48 @@ void vkbasic_swapchain_destroy(
 	VkbasicFramebufferImage* elements = vs->elements;
 	for (uint32_t i = 0; i < vs->image_count; i++) {
 		vkDestroyFramebuffer(device, elements[i].framebuffer, NULL);
-		vkDestroyImageView(device, elements[i].imageview, NULL);
+		vkDestroyImageView(device, elements[i].attachments[0], NULL);
 	}
 	free(elements);
 	vkDestroySwapchainKHR(device, vs->swapchain, NULL);
-	free(vs);
+}
+
+VkbasicFramebufferImage* vkbasic_framebuffer(
+	VkDevice device,
+	VkbasicSwapchain* vs,
+	VkRenderPass renderpass,
+	VkFormat format,
+	VkImageView depthstencil,
+	uint32_t* image_count,
+	uint32_t width,
+	uint32_t height
+) {
+	vkbasic_check(vkGetSwapchainImagesKHR(
+		device, vs->swapchain, image_count, NULL));
+	VkImage* images = malloc(sizeof(VkImage) * *image_count);
+	vkbasic_check(vkGetSwapchainImagesKHR(
+		device, vs->swapchain, image_count, images));
+	VkbasicFramebufferImage* elements =
+		malloc(*image_count * sizeof(VkbasicFramebufferImage));
+	assert(NULL != elements);
+	for (uint32_t i = 0; i < *image_count; i++) {
+		elements[i].image = images[i];
+		vkbasic_create_imageview(
+			&elements[i].attachments[0],
+			device,
+			images[i],
+			format,
+			VK_IMAGE_ASPECT_COLOR_BIT
+		);
+		elements[i].attachments[1] = depthstencil;
+		elements[i].framebuffer = create_framebuffer(
+			device,
+			renderpass,
+			elements[i].attachments,
+			width,
+			height
+		);
+	}
+	free(images);
+	return elements;
 }

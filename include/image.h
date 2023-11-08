@@ -17,4 +17,15 @@ typedef struct {
 	VkImageView imageview;
 } VkbasicImage;
 
+void vkbasic_image_new(
+	VkbasicImage* output,
+	VkDevice device,
+	VkPhysicalDeviceMemoryProperties pdev_memprop,
+	uint32_t width,
+	uint32_t height,
+	VkFormat format
+);
+
+void vkbasic_image_destroy(VkbasicImage* image, VkDevice device);
+
 #endif

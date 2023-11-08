@@ -8,7 +8,7 @@ VkPhysicalDevice vkbasic_pdev_selector(
 	uint32_t* result_idx
 );
 void vkbasic_pdev_print(VkPhysicalDevice pdev);
-bool vkbasic_depth_format(
+void vkbasic_depth_format(
 	VkPhysicalDevice pdev,
 	VkFormat *select
 );

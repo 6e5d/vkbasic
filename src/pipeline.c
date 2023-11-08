@@ -105,6 +105,23 @@ VkbasicPipelineConf* vkbasic_pipeline_configure(
 		.pushConstantRangeCount = 0,
 	};
 
+	VkStructureType tmp =
+		VK_STRUCTURE_TYPE_PIPELINE_DEPTH_STENCIL_STATE_CREATE_INFO;
+	VkPipelineDepthStencilStateCreateInfo depthstencil = {
+		.sType = tmp,
+		.depthTestEnable = VK_TRUE,
+		.depthWriteEnable = VK_TRUE,
+		.depthCompareOp = VK_COMPARE_OP_LESS_OR_EQUAL,
+		.depthBoundsTestEnable = VK_FALSE,
+		.back.failOp = VK_STENCIL_OP_KEEP,
+		.back.passOp = VK_STENCIL_OP_KEEP,
+		.back.compareOp = VK_COMPARE_OP_ALWAYS,
+		.stencilTestEnable = VK_FALSE,
+		.front.failOp = VK_STENCIL_OP_KEEP,
+		.front.passOp = VK_STENCIL_OP_KEEP,
+		.front.compareOp = VK_COMPARE_OP_ALWAYS,
+	};
+
 	*conf = (VkbasicPipelineConf) {
 		.ss_vert = ss_vert,
 		.ss_frag = ss_frag,
@@ -115,6 +132,7 @@ VkbasicPipelineConf* vkbasic_pipeline_configure(
 		.viewport_state = viewport_state,
 		.rasterizer = rasterizer,
 		.multisampling = multisampling,
+		.depthstencil = depthstencil,
 		.cba = cba,
 		.cb = cb,
 		.pl = pl,
@@ -144,6 +162,7 @@ void vkbasic_pipeline_standard(
 		.pViewportState = &conf->viewport_state,
 		.pRasterizationState = &conf->rasterizer,
 		.pMultisampleState = &conf->multisampling,
+		.pDepthStencilState = &conf->depthstencil,
 		.pColorBlendState = &conf->cb,
 		.pStages = stages,
 		.layout = *pipelinelayout,

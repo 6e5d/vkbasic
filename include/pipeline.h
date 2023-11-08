@@ -10,6 +10,7 @@ typedef struct {
 	VkPipelineViewportStateCreateInfo viewport_state;
 	VkPipelineRasterizationStateCreateInfo rasterizer;
 	VkPipelineMultisampleStateCreateInfo multisampling;
+	VkPipelineDepthStencilStateCreateInfo depthstencil;
 	VkPipelineColorBlendAttachmentState cba;
 	VkPipelineColorBlendStateCreateInfo cb;
 	VkPipelineLayoutCreateInfo pl;
