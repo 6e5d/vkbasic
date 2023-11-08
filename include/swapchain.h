@@ -5,12 +5,14 @@
 #include <stdint.h>
 
 #include "../include/framebuffer.h"
+#include "../include/image.h"
 #include "../include/scsi.h"
 
 typedef struct {
 	VkSwapchainKHR swapchain;
 	uint32_t image_count;
 	VkbasicFramebufferImage* elements;
+	VkbasicImage depth;
 } VkbasicSwapchain;
 
 void vkbasic_swapchain_destroy(
@@ -18,6 +20,7 @@ void vkbasic_swapchain_destroy(
 	VkDevice device,
 	VkCommandPool cpool
 );
+
 VkbasicSwapchain* vkbasic_swapchain_new(
 	VkbasicScsi* scsi,
 	VkDevice device,

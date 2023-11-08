@@ -14,6 +14,8 @@ typedef struct {
 	VkDebugUtilsMessengerEXT messenger;
 	VkSurfaceKHR surface;
 	VkPhysicalDevice pdev;
+	VkFormat depth_format;
+	VkPhysicalDeviceMemoryProperties pdev_memprop;
 	VkDevice device;
 	VkQueue queue;
 	VkCommandPool cpool;

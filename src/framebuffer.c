@@ -1,39 +1,11 @@
+#include <assert.h>
 #include <stdint.h>
 #include <stdlib.h>
 #include <vulkan/vulkan.h>
 
-#include "../include/framebuffer.h"
 #include "../include/common.h"
-
-static VkImageView create_imageview(
-	VkDevice device,
-	VkImage image,
-	VkFormat format
-) {
-	VkImageView imageview;
-	VkImageViewCreateInfo createInfo = {
-		.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO,
-		.viewType = VK_IMAGE_VIEW_TYPE_2D,
-		.components.r = VK_COMPONENT_SWIZZLE_IDENTITY,
-		.components.g = VK_COMPONENT_SWIZZLE_IDENTITY,
-		.components.b = VK_COMPONENT_SWIZZLE_IDENTITY,
-		.components.a = VK_COMPONENT_SWIZZLE_IDENTITY,
-		.subresourceRange.baseMipLevel = 0,
-		.subresourceRange.levelCount = 1,
-		.subresourceRange.baseArrayLayer = 0,
-		.subresourceRange.layerCount = 1,
-		.image = image,
-		.format = format,
-		.subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT,
-	};
-	vkbasic_check(vkCreateImageView(
-		device,
-		&createInfo,
-		NULL,
-		&imageview
-	));
-	return imageview;
-}
+#include "../include/image.h"
+#include "../include/framebuffer.h"
 
 static VkFramebuffer create_framebuffer(
 	VkDevice device,
@@ -73,12 +45,15 @@ VkbasicFramebufferImage* vkbasic_framebuffer(
 		device, swapchain, image_count, images));
 	VkbasicFramebufferImage* elements =
 		malloc(*image_count * sizeof(VkbasicFramebufferImage));
+	assert(NULL != elements);
 	for (uint32_t i = 0; i < *image_count; i++) {
 		elements[i].image = images[i];
-		elements[i].imageview = create_imageview(
+		vkbasic_create_imageview(
+			&elements[i].imageview,
 			device,
 			images[i],
-			format
+			format,
+			VK_IMAGE_ASPECT_COLOR_BIT
 		);
 		elements[i].framebuffer = create_framebuffer(
 			device,

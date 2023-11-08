@@ -3,9 +3,38 @@
 #include <vulkan/vulkan.h>
 #include <stdlib.h>
 #include <stdio.h>
+#include <stddef.h>
+#include <stdbool.h>
 
 #include "../include/common.h"
 #include "../include/pdev.h"
+
+bool vkbasic_depth_format(
+	VkPhysicalDevice pdev,
+	VkFormat *select
+) {
+	static const VkFormat formats[5] = {
+		VK_FORMAT_D32_SFLOAT_S8_UINT,
+		VK_FORMAT_D24_UNORM_S8_UINT,
+		VK_FORMAT_D16_UNORM_S8_UINT,
+		// only support depth + stencil
+		// VK_FORMAT_D32_SFLOAT,
+		// VK_FORMAT_D16_UNORM
+	};
+	for (size_t i = 0; i < 5; i += 1) {
+		VkFormat format = formats[i];
+		VkFormatProperties prop;
+		vkGetPhysicalDeviceFormatProperties(pdev, format, &prop);
+		if (prop.optimalTilingFeatures &
+			VK_FORMAT_FEATURE_DEPTH_STENCIL_ATTACHMENT_BIT)
+		{
+			*select = format;
+			printf("selected depth format: %d", *select);
+			return false;
+		}
+	}
+	return true;
+}
 
 static bool check_device_surface_support(
 	VkPhysicalDevice pdev, VkSurfaceKHR surface, uint32_t* idx

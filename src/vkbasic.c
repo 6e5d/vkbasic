@@ -23,6 +23,8 @@ Vkbasic* vkbasic_new(
 	v->surface = surface;
 	uint32_t family_idx;
 	v->pdev = vkbasic_pdev_selector(instance, surface, &family_idx);
+	vkbasic_depth_format(v->pdev, &v->depth_format);
+	vkGetPhysicalDeviceMemoryProperties(v->pdev, &v->pdev_memprop);
 	VkbasicDqc dqc = vkbasic_device(v->pdev, family_idx);
 	v->device = dqc.device;
 	v->cpool = dqc.cpool;
