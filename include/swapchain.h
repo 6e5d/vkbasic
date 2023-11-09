@@ -4,6 +4,7 @@
 #include <vulkan/vulkan.h>
 #include <stdint.h>
 
+#include "../../vkstatic/include/vkstatic.h"
 #include "../../vkhelper/include/framebuffer.h"
 #include "../../vkhelper/include/image.h"
 #include "../../vkhelper/include/scsi.h"
@@ -23,9 +24,7 @@ void vkbasic_swapchain_destroy(
 
 void vkbasic_swapchain_new(
 	VkbasicSwapchain* vs,
-	VkhelperScsi* scsi,
-	VkDevice device,
-	VkSurfaceKHR surface,
+	Vkstatic* vks,
 	VkRenderPass renderpass,
 	uint32_t width,
 	uint32_t height

@@ -4,6 +4,7 @@
 #include <stdint.h>
 
 #include "../include/swapchain.h"
+#include "../../vkstatic/include/vkstatic.h"
 #include "../../vkhelper/include/framebuffer.h"
 #include "../../vkhelper/include/scsi.h"
 
@@ -49,41 +50,40 @@ static VkhelperFramebufferImage* vkbasic_framebuffer(
 
 void vkbasic_swapchain_new(
 	VkbasicSwapchain* vs,
-	VkhelperScsi* scsi,
-	VkDevice device,
-	VkSurfaceKHR surface,
+	Vkstatic* vks,
 	VkRenderPass renderpass,
 	uint32_t width,
 	uint32_t height
 ) {
+	VkSurfaceCapabilitiesKHR* caps = &vks->surface_caps;
 	uint32_t min_image_count;
-	if (scsi->caps.minImageCount + 1 < scsi->caps.maxImageCount) {
-		min_image_count = scsi->caps.minImageCount + 1;
+	if (caps->minImageCount + 1 < caps->maxImageCount) {
+		min_image_count = caps->minImageCount + 1;
 	} else {
-		min_image_count = scsi->caps.minImageCount;
+		min_image_count = caps->minImageCount;
 	}
 	VkSwapchainCreateInfoKHR info = {
 		.sType = VK_STRUCTURE_TYPE_SWAPCHAIN_CREATE_INFO_KHR,
-		.surface = surface,
+		.surface = vks->surface,
 		.minImageCount = min_image_count,
-		.imageFormat = scsi->format.format,
-		.imageColorSpace = scsi->format.colorSpace,
+		.imageFormat = vks->surface_format.format,
+		.imageColorSpace = vks->surface_format.colorSpace,
 		.imageExtent.width = width,
 		.imageExtent.height = height,
 		.imageArrayLayers = 1,
 		.imageUsage = VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT,
 		.imageSharingMode = VK_SHARING_MODE_EXCLUSIVE,
-		.preTransform = scsi->caps.currentTransform,
+		.preTransform = caps->currentTransform,
 		.compositeAlpha = VK_COMPOSITE_ALPHA_OPAQUE_BIT_KHR,
 		.presentMode = VK_PRESENT_MODE_MAILBOX_KHR,
 		.clipped = 1,
 	};
-	assert(0 == vkCreateSwapchainKHR(device, &info, NULL, &vs->swapchain));
+	assert(0 == vkCreateSwapchainKHR(vks->device, &info, NULL, &vs->swapchain));
 	vs->elements = vkbasic_framebuffer(
-		device,
+		vks->device,
 		vs,
 		renderpass,
-		scsi->format.format,
+		vks->surface_format.format,
 		vs->depth.imageview,
 		&min_image_count,
 		width,

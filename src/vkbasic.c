@@ -82,20 +82,12 @@ void vkbasic_swapchain_update(
 	vkhelper_image_new(
 		&v->vs.depth,
 		vks->device,
-		vks->pdev_memprop,
+		vks->memprop,
 		width,
 		height,
 		vks->depth_format
 	);
-	vkbasic_swapchain_new(
-		&v->vs,
-		&vks->scsi,
-		vks->device,
-		vks->surface,
-		renderpass,
-		width,
-		height
-	);
+	vkbasic_swapchain_new(&v->vs, vks, renderpass, width, height);
 }
 
 void vkbasic_deinit(Vkbasic* v, VkDevice device, VkCommandPool cpool) {
