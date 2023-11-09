@@ -7,6 +7,46 @@
 #include "../../vkhelper/include/framebuffer.h"
 #include "../../vkhelper/include/scsi.h"
 
+static VkhelperFramebufferImage* vkbasic_framebuffer(
+	VkDevice device,
+	VkbasicSwapchain* vs,
+	VkRenderPass renderpass,
+	VkFormat format,
+	VkImageView depthstencil,
+	uint32_t* image_count,
+	uint32_t width,
+	uint32_t height
+) {
+	assert(0 == vkGetSwapchainImagesKHR(
+		device, vs->swapchain, image_count, NULL));
+	VkImage* images = malloc(sizeof(VkImage) * *image_count);
+	assert(0 == vkGetSwapchainImagesKHR(
+		device, vs->swapchain, image_count, images));
+	VkhelperFramebufferImage* elements =
+		malloc(*image_count * sizeof(VkhelperFramebufferImage));
+	assert(NULL != elements);
+	for (uint32_t i = 0; i < *image_count; i++) {
+		elements[i].image = images[i];
+		vkhelper_create_imageview(
+			&elements[i].attachments[0],
+			device,
+			images[i],
+			format,
+			VK_IMAGE_ASPECT_COLOR_BIT
+		);
+		elements[i].attachments[1] = depthstencil;
+		elements[i].framebuffer = create_framebuffer(
+			device,
+			renderpass,
+			elements[i].attachments,
+			width,
+			height
+		);
+	}
+	free(images);
+	return elements;
+}
+
 void vkbasic_swapchain_new(
 	VkbasicSwapchain* vs,
 	VkhelperScsi* scsi,
@@ -64,44 +104,4 @@ void vkbasic_swapchain_destroy(
 	}
 	free(elements);
 	vkDestroySwapchainKHR(device, vs->swapchain, NULL);
-}
-
-VkhelperFramebufferImage* vkbasic_framebuffer(
-	VkDevice device,
-	VkbasicSwapchain* vs,
-	VkRenderPass renderpass,
-	VkFormat format,
-	VkImageView depthstencil,
-	uint32_t* image_count,
-	uint32_t width,
-	uint32_t height
-) {
-	assert(0 == vkGetSwapchainImagesKHR(
-		device, vs->swapchain, image_count, NULL));
-	VkImage* images = malloc(sizeof(VkImage) * *image_count);
-	assert(0 == vkGetSwapchainImagesKHR(
-		device, vs->swapchain, image_count, images));
-	VkhelperFramebufferImage* elements =
-		malloc(*image_count * sizeof(VkhelperFramebufferImage));
-	assert(NULL != elements);
-	for (uint32_t i = 0; i < *image_count; i++) {
-		elements[i].image = images[i];
-		vkhelper_create_imageview(
-			&elements[i].attachments[0],
-			device,
-			images[i],
-			format,
-			VK_IMAGE_ASPECT_COLOR_BIT
-		);
-		elements[i].attachments[1] = depthstencil;
-		elements[i].framebuffer = create_framebuffer(
-			device,
-			renderpass,
-			elements[i].attachments,
-			width,
-			height
-		);
-	}
-	free(images);
-	return elements;
 }

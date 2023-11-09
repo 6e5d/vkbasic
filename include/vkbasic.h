@@ -6,21 +6,9 @@
 #include <vulkan/vulkan.h>
 
 #include "../include/swapchain.h"
-#include "../../vkhelper/include/scsi.h"
+#include "../../vkstatic/include/vkstatic.h"
 
 typedef struct {
-	VkInstance instance;
-	VkCommandBuffer cbuf;
-	VkDebugUtilsMessengerEXT messenger;
-	VkSurfaceKHR surface;
-	VkPhysicalDevice pdev;
-	VkFormat depth_format;
-	VkPhysicalDeviceMemoryProperties pdev_memprop;
-	VkhelperScsi scsi;
-	VkDevice device;
-	VkQueue queue;
-	VkCommandPool cpool;
-
 	VkhelperImage depthstencil;
 	VkbasicSwapchain vs;
 	VkSemaphore image_available;
@@ -28,18 +16,21 @@ typedef struct {
 	VkFence fence;
 } Vkbasic;
 
-Vkbasic* vkbasic_new(
-	VkInstance instance,
-	VkSurfaceKHR surface
-);
+void vkbasic_init(Vkbasic* v, VkDevice device);
 void vkbasic_swapchain_update(
 	Vkbasic* v,
+	Vkstatic* vks,
 	VkRenderPass renderpass,
 	uint32_t width,
 	uint32_t height
 );
-void vkbasic_present(Vkbasic* vb, uint32_t* index);
-void vkbasic_next_index(Vkbasic* vb, uint32_t* index);
-void vkbasic_destroy(Vkbasic* v);
+void vkbasic_present(
+	Vkbasic* vb,
+	VkQueue queue,
+	VkCommandBuffer cbuf,
+	uint32_t* index
+);
+void vkbasic_next_index(Vkbasic* vb, VkDevice device, uint32_t* index);
+void vkbasic_deinit(Vkbasic* v, VkDevice device, VkCommandPool cpool);
 
 #endif

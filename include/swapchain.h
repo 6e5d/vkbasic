@@ -31,16 +31,4 @@ void vkbasic_swapchain_new(
 	uint32_t height
 );
 
-VkhelperFramebufferImage* vkbasic_framebuffer(
-	VkDevice device,
-	VkbasicSwapchain* vs,
-	VkRenderPass renderpass,
-	VkFormat format,
-	VkImageView depthstencil,
-	// input min_image_count, modified into actual
-	uint32_t* image_count,
-	uint32_t width,
-	uint32_t height
-);
-
 #endif
