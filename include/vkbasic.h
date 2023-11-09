@@ -6,7 +6,7 @@
 #include <vulkan/vulkan.h>
 
 #include "../include/swapchain.h"
-#include "../include/scsi.h"
+#include "../../vkhelper/include/scsi.h"
 
 typedef struct {
 	VkInstance instance;
@@ -16,12 +16,12 @@ typedef struct {
 	VkPhysicalDevice pdev;
 	VkFormat depth_format;
 	VkPhysicalDeviceMemoryProperties pdev_memprop;
-	VkbasicScsi scsi;
+	VkhelperScsi scsi;
 	VkDevice device;
 	VkQueue queue;
 	VkCommandPool cpool;
 
-	VkbasicImage depthstencil;
+	VkhelperImage depthstencil;
 	VkbasicSwapchain vs;
 	VkSemaphore image_available;
 	VkSemaphore render_finished;

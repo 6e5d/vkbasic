@@ -4,15 +4,15 @@
 #include <vulkan/vulkan.h>
 #include <stdint.h>
 
-#include "../include/framebuffer.h"
-#include "../include/image.h"
-#include "../include/scsi.h"
+#include "../../vkhelper/include/framebuffer.h"
+#include "../../vkhelper/include/image.h"
+#include "../../vkhelper/include/scsi.h"
 
 typedef struct {
 	VkSwapchainKHR swapchain;
 	uint32_t image_count;
-	VkbasicFramebufferImage* elements;
-	VkbasicImage depth;
+	VkhelperFramebufferImage* elements;
+	VkhelperImage depth;
 } VkbasicSwapchain;
 
 void vkbasic_swapchain_destroy(
@@ -23,7 +23,7 @@ void vkbasic_swapchain_destroy(
 
 void vkbasic_swapchain_new(
 	VkbasicSwapchain* vs,
-	VkbasicScsi* scsi,
+	VkhelperScsi* scsi,
 	VkDevice device,
 	VkSurfaceKHR surface,
 	VkRenderPass renderpass,
@@ -31,7 +31,7 @@ void vkbasic_swapchain_new(
 	uint32_t height
 );
 
-VkbasicFramebufferImage* vkbasic_framebuffer(
+VkhelperFramebufferImage* vkbasic_framebuffer(
 	VkDevice device,
 	VkbasicSwapchain* vs,
 	VkRenderPass renderpass,

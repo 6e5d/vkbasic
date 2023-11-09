@@ -4,13 +4,12 @@
 #include <stdint.h>
 
 #include "../include/swapchain.h"
-#include "../include/scsi.h"
-#include "../include/framebuffer.h"
-#include "../include/common.h"
+#include "../../vkhelper/include/framebuffer.h"
+#include "../../vkhelper/include/scsi.h"
 
 void vkbasic_swapchain_new(
 	VkbasicSwapchain* vs,
-	VkbasicScsi* scsi,
+	VkhelperScsi* scsi,
 	VkDevice device,
 	VkSurfaceKHR surface,
 	VkRenderPass renderpass,
@@ -39,8 +38,7 @@ void vkbasic_swapchain_new(
 		.presentMode = VK_PRESENT_MODE_MAILBOX_KHR,
 		.clipped = 1,
 	};
-	vkbasic_check(vkCreateSwapchainKHR(
-		device, &info, NULL, &vs->swapchain));
+	assert(0 == vkCreateSwapchainKHR(device, &info, NULL, &vs->swapchain));
 	vs->elements = vkbasic_framebuffer(
 		device,
 		vs,
@@ -59,7 +57,7 @@ void vkbasic_swapchain_destroy(
 	VkDevice device,
 	VkCommandPool cpool
 ) {
-	VkbasicFramebufferImage* elements = vs->elements;
+	VkhelperFramebufferImage* elements = vs->elements;
 	for (uint32_t i = 0; i < vs->image_count; i++) {
 		vkDestroyFramebuffer(device, elements[i].framebuffer, NULL);
 		vkDestroyImageView(device, elements[i].attachments[0], NULL);
@@ -68,7 +66,7 @@ void vkbasic_swapchain_destroy(
 	vkDestroySwapchainKHR(device, vs->swapchain, NULL);
 }
 
-VkbasicFramebufferImage* vkbasic_framebuffer(
+VkhelperFramebufferImage* vkbasic_framebuffer(
 	VkDevice device,
 	VkbasicSwapchain* vs,
 	VkRenderPass renderpass,
@@ -78,17 +76,17 @@ VkbasicFramebufferImage* vkbasic_framebuffer(
 	uint32_t width,
 	uint32_t height
 ) {
-	vkbasic_check(vkGetSwapchainImagesKHR(
+	assert(0 == vkGetSwapchainImagesKHR(
 		device, vs->swapchain, image_count, NULL));
 	VkImage* images = malloc(sizeof(VkImage) * *image_count);
-	vkbasic_check(vkGetSwapchainImagesKHR(
+	assert(0 == vkGetSwapchainImagesKHR(
 		device, vs->swapchain, image_count, images));
-	VkbasicFramebufferImage* elements =
-		malloc(*image_count * sizeof(VkbasicFramebufferImage));
+	VkhelperFramebufferImage* elements =
+		malloc(*image_count * sizeof(VkhelperFramebufferImage));
 	assert(NULL != elements);
 	for (uint32_t i = 0; i < *image_count; i++) {
 		elements[i].image = images[i];
-		vkbasic_create_imageview(
+		vkhelper_create_imageview(
 			&elements[i].attachments[0],
 			device,
 			images[i],

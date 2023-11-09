@@ -1,38 +1,38 @@
+#include <assert.h>
 #include <stdlib.h>
 #include <stdint.h>
 #include <vulkan/vulkan.h>
 
 #include "../include/vkbasic.h"
-#include "../include/device.h"
-#include "../include/pdev.h"
-#include "../include/semaphore.h"
-#include "../include/instance.h"
-#include "../include/validation.h"
 #include "../include/swapchain.h"
-#include "../include/scsi.h"
-#include "../include/cbuf.h"
-#include "../include/common.h"
+#include "../../vkhelper/include/device.h"
+#include "../../vkhelper/include/semaphore.h"
+#include "../../vkhelper/include/cbuf.h"
+#include "../../vkhelper/include/scsi.h"
+#include "../../vkhelper/include/validation.h"
+#include "../../vkhelper/include/instance.h"
+#include "../../vkhelper/include/pdev.h"
 
 Vkbasic* vkbasic_new(
 	VkInstance instance,
 	VkSurfaceKHR surface
 ) {
 	Vkbasic* v = malloc(sizeof(Vkbasic));
-	v->messenger = vkbasic_validation_new(instance);
+	v->messenger = vkhelper_validation_new(instance);
 	v->instance = instance;
 	v->surface = surface;
 	uint32_t family_idx;
-	v->pdev = vkbasic_pdev_selector(instance, surface, &family_idx);
-	vkbasic_depth_format(v->pdev, &v->depth_format);
+	v->pdev = vkhelper_pdev_selector(instance, surface, &family_idx);
+	vkhelper_depth_format(v->pdev, &v->depth_format);
 	vkGetPhysicalDeviceMemoryProperties(v->pdev, &v->pdev_memprop);
-	v->scsi = vkbasic_scsi(v->pdev, v->surface);
-	vkbasic_device(&v->device, &v->queue, &v->cpool, v->pdev, family_idx);
+	v->scsi = vkhelper_scsi(v->pdev, v->surface);
+	vkhelper_device(&v->device, &v->queue, &v->cpool, v->pdev, family_idx);
 
 	v->vs.swapchain = VK_NULL_HANDLE;
-	v->cbuf = vkbasic_cbuf_new(v->cpool, v->device);
-	v->image_available = vkbasic_semaphore(v->device);
-	v->render_finished = vkbasic_semaphore(v->device);
-	v->fence = vkbasic_fence(v->device);
+	v->cbuf = vkhelper_cbuf_new(v->cpool, v->device);
+	v->image_available = vkhelper_semaphore(v->device);
+	v->render_finished = vkhelper_semaphore(v->device);
+	v->fence = vkhelper_fence(v->device);
 	return v;
 }
 
@@ -49,7 +49,7 @@ void vkbasic_present(Vkbasic* vb, uint32_t* index) {
 		.signalSemaphoreCount = 1,
 		.pSignalSemaphores = &vb->render_finished,
 	};
-	vkbasic_check(vkQueueSubmit(vb->queue, 1, &submitInfo, vb->fence));
+	assert(0 == vkQueueSubmit(vb->queue, 1, &submitInfo, vb->fence));
 	VkPresentInfoKHR presentInfo = {
 		.sType = VK_STRUCTURE_TYPE_PRESENT_INFO_KHR,
 		.waitSemaphoreCount = 1,
@@ -60,13 +60,13 @@ void vkbasic_present(Vkbasic* vb, uint32_t* index) {
 	};
 	VkResult result = vkQueuePresentKHR(vb->queue, &presentInfo);
 	if (result != VK_SUBOPTIMAL_KHR) {
-		vkbasic_check(result);
+		assert(0 == result);
 	}
 }
 
 void vkbasic_next_index(Vkbasic* vb, uint32_t* index) {
-	vkbasic_check(vkWaitForFences(vb->device, 1, &vb->fence, 1, UINT64_MAX));
-	vkbasic_check(vkResetFences(vb->device, 1, &vb->fence));
+	assert(0 == vkWaitForFences(vb->device, 1, &vb->fence, 1, UINT64_MAX));
+	assert(0 == vkResetFences(vb->device, 1, &vb->fence));
 	VkResult result = vkAcquireNextImageKHR(
 		vb->device,
 		vb->vs.swapchain,
@@ -76,7 +76,7 @@ void vkbasic_next_index(Vkbasic* vb, uint32_t* index) {
 		index
 	);
 	if (result != VK_SUBOPTIMAL_KHR) {
-		vkbasic_check(result);
+		assert(0 == result);
 	}
 }
 
@@ -88,9 +88,9 @@ void vkbasic_swapchain_update(
 ) {
 	if (v->vs.swapchain != VK_NULL_HANDLE) {
 		vkbasic_swapchain_destroy(&v->vs, v->device, v->cpool);
-		vkbasic_image_destroy(&v->vs.depth, v->device);
+		vkhelper_image_destroy(&v->vs.depth, v->device);
 	}
-	vkbasic_image_new(
+	vkhelper_image_new(
 		&v->vs.depth,
 		v->device,
 		v->pdev_memprop,
@@ -113,13 +113,13 @@ void vkbasic_destroy(Vkbasic* v) {
 	vkDestroyFence(v->device, v->fence, NULL);
 	vkDestroySemaphore(v->device, v->image_available, NULL);
 	vkDestroySemaphore(v->device, v->render_finished, NULL);
-	vkbasic_image_destroy(&v->vs.depth, v->device);
+	vkhelper_image_destroy(&v->vs.depth, v->device);
 	vkbasic_swapchain_destroy(&v->vs, v->device, v->cpool);
 	vkFreeCommandBuffers(v->device, v->cpool, 1, &v->cbuf);
 	vkDestroyCommandPool(v->device, v->cpool, NULL);
 	vkDestroyDevice(v->device, NULL);
 	vkDestroySurfaceKHR(v->instance, v->surface, NULL);
-	vkbasic_validation_destroy(v->instance, v->messenger);
+	vkhelper_validation_destroy(v->instance, v->messenger);
 	vkDestroyInstance(v->instance, NULL);
 	free(v);
 }

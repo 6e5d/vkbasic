@@ -1,8 +1,8 @@
-#include <vulkan/vulkan.h>
+#include <assert.h>
 #include <stdlib.h>
+#include <vulkan/vulkan.h>
 
 #include "../include/pipeline.h"
-#include "../include/common.h"
 
 VkbasicPipelineConf* vkbasic_pipeline_configure(
 	VkShaderModule vert,
@@ -152,7 +152,7 @@ void vkbasic_pipeline_standard(
 ) {
 	VkPipelineShaderStageCreateInfo stages[] =
 		{conf->ss_vert, conf->ss_frag};
-	vkbasic_check(vkCreatePipelineLayout(
+	assert(0 == vkCreatePipelineLayout(
 		device, &conf->pl, NULL, pipelinelayout));
 	VkGraphicsPipelineCreateInfo info = {
 		.sType = VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO,
@@ -170,7 +170,7 @@ void vkbasic_pipeline_standard(
 		.subpass = 0,
 		.basePipelineHandle = VK_NULL_HANDLE,
 	};
-	vkbasic_check(vkCreateGraphicsPipelines(
+	assert(0 == vkCreateGraphicsPipelines(
 		device,
 		VK_NULL_HANDLE,
 		1,
