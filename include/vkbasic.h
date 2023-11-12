@@ -1,5 +1,5 @@
-#ifndef _VKBASIC_VKBASICH
-#define _VKBASIC_VKBASICH
+#ifndef INCLUDEGUARD_VKBASIC_VKBASICH
+#define INCLUDEGUARD_VKBASIC_VKBASICH
 
 #include <stdint.h>
 #include <wayland-client.h>

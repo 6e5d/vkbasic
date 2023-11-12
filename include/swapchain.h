@@ -1,5 +1,5 @@
-#ifndef _VKBASIC_SWAPCHAINH
-#define _VKBASIC_SWAPCHAINH
+#ifndef INCLUDEGUARD_VKBASIC_SWAPCHAINH
+#define INCLUDEGUARD_VKBASIC_SWAPCHAINH
 
 #include <vulkan/vulkan.h>
 #include <stdint.h>
