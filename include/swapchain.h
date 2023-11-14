@@ -1,13 +1,13 @@
 #ifndef INCLUDEGUARD_VKBASIC_SWAPCHAINH
 #define INCLUDEGUARD_VKBASIC_SWAPCHAINH
 
-#include <vulkan/vulkan.h>
 #include <stdint.h>
+#include <vulkan/vulkan.h>
 
-#include "../../vkstatic/include/vkstatic.h"
 #include "../../vkhelper/include/framebuffer.h"
 #include "../../vkhelper/include/image.h"
 #include "../../vkhelper/include/scsi.h"
+#include "../../vkstatic/include/vkstatic.h"
 
 typedef struct {
 	VkSwapchainKHR swapchain;
@@ -17,7 +17,7 @@ typedef struct {
 } VkbasicSwapchain;
 
 void vkbasic_swapchain_destroy(
-	VkbasicSwapchain *swapchain,
+	VkbasicSwapchain *vs,
 	VkDevice device,
 	VkCommandPool cpool
 );

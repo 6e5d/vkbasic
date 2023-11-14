@@ -1,12 +1,12 @@
 #include <assert.h>
-#include <vulkan/vulkan.h>
-#include <stdlib.h>
 #include <stdint.h>
+#include <stdlib.h>
+#include <vulkan/vulkan.h>
 
-#include "../include/swapchain.h"
-#include "../../vkstatic/include/vkstatic.h"
 #include "../../vkhelper/include/framebuffer.h"
 #include "../../vkhelper/include/scsi.h"
+#include "../../vkstatic/include/vkstatic.h"
+#include "../include/swapchain.h"
 
 static VkhelperFramebufferImage* vkbasic_framebuffer(
 	VkDevice device,

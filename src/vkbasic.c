@@ -1,12 +1,12 @@
 #include <assert.h>
-#include <stdlib.h>
 #include <stdint.h>
+#include <stdlib.h>
 #include <vulkan/vulkan.h>
 
-#include "../include/vkbasic.h"
-#include "../include/swapchain.h"
-#include "../../vkstatic/include/vkstatic.h"
 #include "../../vkhelper/include/semaphore.h"
+#include "../../vkstatic/include/vkstatic.h"
+#include "../include/swapchain.h"
+#include "../include/vkbasic.h"
 
 void vkbasic_init(Vkbasic* v, VkDevice device) {
 	v->vs.swapchain = VK_NULL_HANDLE;
@@ -19,7 +19,7 @@ void vkbasic_present(
 	Vkbasic* vb,
 	VkQueue queue,
 	VkCommandBuffer cbuf,
-	uint32_t* index
+	const uint32_t* index
 ) {
 	const VkPipelineStageFlags wait_stage =
 		VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT;

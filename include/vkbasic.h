@@ -2,11 +2,11 @@
 #define INCLUDEGUARD_VKBASIC_VKBASICH
 
 #include <stdint.h>
-#include <wayland-client.h>
 #include <vulkan/vulkan.h>
+#include <wayland-client.h>
 
-#include "../include/swapchain.h"
 #include "../../vkstatic/include/vkstatic.h"
+#include "../include/swapchain.h"
 
 typedef struct {
 	VkhelperImage depthstencil;
@@ -28,7 +28,7 @@ void vkbasic_present(
 	Vkbasic* vb,
 	VkQueue queue,
 	VkCommandBuffer cbuf,
-	uint32_t* index
+	const uint32_t* index
 );
 void vkbasic_next_index(Vkbasic* vb, VkDevice device, uint32_t* index);
 void vkbasic_deinit(Vkbasic* v, VkDevice device, VkCommandPool cpool);
