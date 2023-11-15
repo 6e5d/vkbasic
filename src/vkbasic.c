@@ -75,6 +75,7 @@ void vkbasic_swapchain_update(
 	uint32_t width,
 	uint32_t height
 ) {
+	assert(width > 0 && height > 0);
 	if (v->vs.swapchain != VK_NULL_HANDLE) {
 		vkbasic_swapchain_destroy(&v->vs, vks->device, vks->cpool);
 		vkhelper_image_destroy(&v->vs.depth, vks->device);
