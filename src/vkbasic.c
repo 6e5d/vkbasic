@@ -78,7 +78,7 @@ void vkbasic_swapchain_update(
 	assert(width > 0 && height > 0);
 	if (v->vs.swapchain != VK_NULL_HANDLE) {
 		vkbasic_swapchain_destroy(&v->vs, vks->device, vks->cpool);
-		vkhelper_image_destroy(&v->vs.depth, vks->device);
+		vkhelper_image_deinit(&v->vs.depth, vks->device);
 	}
 	vkhelper_image_new(
 		&v->vs.depth,
@@ -86,7 +86,10 @@ void vkbasic_swapchain_update(
 		vks->memprop,
 		width,
 		height,
-		vks->depth_format
+		vks->depth_format,
+		VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT |
+			VK_IMAGE_USAGE_INPUT_ATTACHMENT_BIT,
+		VK_IMAGE_ASPECT_DEPTH_BIT | VK_IMAGE_ASPECT_STENCIL_BIT
 	);
 	vkbasic_swapchain_new(&v->vs, vks, renderpass, width, height);
 }
@@ -95,6 +98,6 @@ void vkbasic_deinit(Vkbasic* v, VkDevice device, VkCommandPool cpool) {
 	vkDestroyFence(device, v->fence, NULL);
 	vkDestroySemaphore(device, v->image_available, NULL);
 	vkDestroySemaphore(device, v->render_finished, NULL);
-	vkhelper_image_destroy(&v->vs.depth, device);
+	vkhelper_image_deinit(&v->vs.depth, device);
 	vkbasic_swapchain_destroy(&v->vs, device, cpool);
 }
