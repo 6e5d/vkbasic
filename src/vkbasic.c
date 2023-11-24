@@ -93,6 +93,7 @@ void vkbasic_swapchain_update(
 		vks->memprop,
 		width,
 		height,
+		false,
 		vks->depth_format,
 		VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT |
 			VK_IMAGE_USAGE_INPUT_ATTACHMENT_BIT,

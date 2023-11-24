@@ -33,7 +33,8 @@ static VkhelperFramebufferImage* vkbasic_framebuffer(
 			device,
 			images[i],
 			format,
-			VK_IMAGE_ASPECT_COLOR_BIT
+			VK_IMAGE_ASPECT_COLOR_BIT,
+			1
 		);
 		elements[i].attachments[1] = depthstencil;
 		elements[i].framebuffer = vkhelper_framebuffer_create(
