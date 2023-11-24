@@ -15,7 +15,7 @@ void vkbasic_init(Vkbasic* v, VkDevice device) {
 	v->fence = vkhelper_fence(device);
 }
 
-void vkbasic_present(
+void vkbasic_submit(
 	Vkbasic* vb,
 	VkQueue queue,
 	VkCommandBuffer cbuf,
@@ -34,6 +34,13 @@ void vkbasic_present(
 		.pSignalSemaphores = &vb->render_finished,
 	};
 	assert(0 == vkQueueSubmit(queue, 1, &submitInfo, vb->fence));
+}
+
+void vkbasic_present(
+	Vkbasic* vb,
+	VkQueue queue,
+	const uint32_t* index
+) {
 	VkPresentInfoKHR presentInfo = {
 		.sType = VK_STRUCTURE_TYPE_PRESENT_INFO_KHR,
 		.waitSemaphoreCount = 1,

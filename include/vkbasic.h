@@ -27,6 +27,11 @@ void vkbasic_swapchain_update(
 void vkbasic_present(
 	Vkbasic* vb,
 	VkQueue queue,
+	const uint32_t* index
+);
+void vkbasic_submit(
+	Vkbasic* vb,
+	VkQueue queue,
 	VkCommandBuffer cbuf,
 	const uint32_t* index
 );

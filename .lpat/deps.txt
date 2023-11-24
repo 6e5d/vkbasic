@@ -1,3 +1,2 @@
-ppath
 vkhelper
 vkstatic
