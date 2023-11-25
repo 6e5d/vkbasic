@@ -87,18 +87,15 @@ void vkbasic_swapchain_update(
 		vkbasic_swapchain_destroy(&v->vs, vks->device, vks->cpool);
 		vkhelper_image_deinit(&v->vs.depth, vks->device);
 	}
-	vkhelper_image_new(
+	vkhelper_image_new_depthstencil(
 		&v->vs.depth,
 		vks->device,
 		vks->memprop,
 		width,
 		height,
-		false,
 		vks->depth_format,
 		VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT |
-			VK_IMAGE_USAGE_INPUT_ATTACHMENT_BIT,
-		VK_IMAGE_ASPECT_DEPTH_BIT | VK_IMAGE_ASPECT_STENCIL_BIT
-	);
+			VK_IMAGE_USAGE_INPUT_ATTACHMENT_BIT);
 	vkbasic_swapchain_new(&v->vs, vks, renderpass, width, height);
 }
 
