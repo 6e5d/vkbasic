@@ -55,7 +55,7 @@ void vkbasic_present(
 	}
 }
 
-void vkbasic_next_index(
+VkFramebuffer vkbasic_next_index(
 	Vkbasic* vb,
 	VkDevice device,
 	uint32_t* index
@@ -73,6 +73,7 @@ void vkbasic_next_index(
 	if (result != VK_SUBOPTIMAL_KHR) {
 		assert(0 == result);
 	}
+	return vb->vs.elements[*index].framebuffer;
 }
 
 void vkbasic_swapchain_update(

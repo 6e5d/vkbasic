@@ -35,7 +35,7 @@ void vkbasic_submit(
 	VkCommandBuffer cbuf,
 	const uint32_t* index
 );
-void vkbasic_next_index(Vkbasic* vb, VkDevice device, uint32_t* index);
+VkFramebuffer vkbasic_next_index(Vkbasic* vb, VkDevice device, uint32_t* index);
 void vkbasic_deinit(Vkbasic* v, VkDevice device, VkCommandPool cpool);
 
 #endif
