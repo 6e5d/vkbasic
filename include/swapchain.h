@@ -1,19 +1,18 @@
 #ifndef INCLUDEGUARD_VKBASIC_SWAPCHAINH
 #define INCLUDEGUARD_VKBASIC_SWAPCHAINH
 
-#include <stdint.h>
 #include <vulkan/vulkan.h>
 
 #include "../../vkhelper/include/framebuffer.h"
-#include "../../vkhelper/include/image.h"
 #include "../../vkhelper/include/scsi.h"
+#include "../../vkhelper2/include/vkhelper2.h"
 #include "../../vkstatic/include/vkstatic.h"
 
 typedef struct {
 	VkSwapchainKHR swapchain;
 	uint32_t image_count;
 	VkhelperFramebufferImage* elements;
-	VkhelperImage depth;
+	Vkhelper2Image depth;
 } VkbasicSwapchain;
 
 void vkbasic_swapchain_destroy(

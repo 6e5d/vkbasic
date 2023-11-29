@@ -9,7 +9,7 @@
 #include "../include/swapchain.h"
 
 typedef struct {
-	VkhelperImage depthstencil;
+	Vkhelper2Image depthstencil;
 	VkbasicSwapchain vs;
 	VkSemaphore image_available;
 	VkSemaphore render_finished;

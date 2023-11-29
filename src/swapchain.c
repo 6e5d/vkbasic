@@ -1,11 +1,9 @@
-#include <assert.h>
-#include <stdint.h>
-#include <stdlib.h>
 #include <vulkan/vulkan.h>
 
 #include "../../vkhelper/include/framebuffer.h"
 #include "../../vkhelper/include/scsi.h"
 #include "../../vkstatic/include/vkstatic.h"
+#include "../../vkhelper2/include/vkhelper2.h"
 #include "../include/swapchain.h"
 
 static VkhelperFramebufferImage* vkbasic_framebuffer(
@@ -28,7 +26,7 @@ static VkhelperFramebufferImage* vkbasic_framebuffer(
 	assert(NULL != elements);
 	for (uint32_t i = 0; i < *image_count; i++) {
 		elements[i].image = images[i];
-		vkhelper_create_imageview(
+		vkhelper2_image_create_imageview(
 			&elements[i].attachments[0],
 			device,
 			images[i],
