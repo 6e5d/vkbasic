@@ -31,10 +31,9 @@ void vkbasic_present(
 void vkbasic_submit(
 	Vkbasic* vb,
 	VkQueue queue,
-	VkCommandBuffer cbuf,
-	const uint32_t* index
+	VkCommandBuffer cbuf
 );
 VkFramebuffer vkbasic_next_index(Vkbasic* vb, VkDevice device, uint32_t* index);
-void vkbasic_deinit(Vkbasic* v, VkDevice device, VkCommandPool cpool);
+void vkbasic_deinit(Vkbasic* v, VkDevice device);
 
 #endif

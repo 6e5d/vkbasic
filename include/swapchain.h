@@ -14,13 +14,12 @@ typedef struct {
 	Vkhelper2Image depth;
 } VkbasicSwapchain;
 
-void vkbasic_swapchain_destroy(
+void vkbasic_swapchain_deinit(
 	VkbasicSwapchain *vs,
-	VkDevice device,
-	VkCommandPool cpool
+	VkDevice device
 );
 
-void vkbasic_swapchain_new(
+void vkbasic_swapchain_init(
 	VkbasicSwapchain* vs,
 	Vkstatic* vks,
 	VkRenderPass renderpass,

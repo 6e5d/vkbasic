@@ -46,7 +46,7 @@ static VkhelperFramebufferImage* vkbasic_framebuffer(
 	return elements;
 }
 
-void vkbasic_swapchain_new(
+void vkbasic_swapchain_init(
 	VkbasicSwapchain* vs,
 	Vkstatic* vks,
 	VkRenderPass renderpass,
@@ -92,11 +92,7 @@ void vkbasic_swapchain_new(
 	vs->image_count = min_image_count;
 }
 
-void vkbasic_swapchain_destroy(
-	VkbasicSwapchain* vs,
-	VkDevice device,
-	VkCommandPool cpool
-) {
+void vkbasic_swapchain_deinit(VkbasicSwapchain* vs, VkDevice device) {
 	VkhelperFramebufferImage* elements = vs->elements;
 	for (uint32_t i = 0; i < vs->image_count; i++) {
 		vkDestroyFramebuffer(device, elements[i].framebuffer, NULL);

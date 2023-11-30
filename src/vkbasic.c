@@ -15,8 +15,7 @@ void vkbasic_init(Vkbasic* v, VkDevice device) {
 void vkbasic_submit(
 	Vkbasic* vb,
 	VkQueue queue,
-	VkCommandBuffer cbuf,
-	const uint32_t* index
+	VkCommandBuffer cbuf
 ) {
 	const VkPipelineStageFlags wait_stage =
 		VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT;
@@ -82,7 +81,7 @@ void vkbasic_swapchain_update(
 ) {
 	assert(width > 0 && height > 0);
 	if (v->vs.swapchain != VK_NULL_HANDLE) {
-		vkbasic_swapchain_destroy(&v->vs, vks->device, vks->cpool);
+		vkbasic_swapchain_deinit(&v->vs, vks->device);
 		vkhelper2_image_deinit(&v->vs.depth, vks->device);
 	}
 	vkhelper2_image_new_depthstencil(
@@ -94,13 +93,13 @@ void vkbasic_swapchain_update(
 		vks->depth_format,
 		VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT |
 			VK_IMAGE_USAGE_INPUT_ATTACHMENT_BIT);
-	vkbasic_swapchain_new(&v->vs, vks, renderpass, width, height);
+	vkbasic_swapchain_init(&v->vs, vks, renderpass, width, height);
 }
 
-void vkbasic_deinit(Vkbasic* v, VkDevice device, VkCommandPool cpool) {
+void vkbasic_deinit(Vkbasic* v, VkDevice device) {
 	vkDestroyFence(device, v->fence, NULL);
 	vkDestroySemaphore(device, v->image_available, NULL);
 	vkDestroySemaphore(device, v->render_finished, NULL);
 	vkhelper2_image_deinit(&v->vs.depth, device);
-	vkbasic_swapchain_destroy(&v->vs, device, cpool);
+	vkbasic_swapchain_deinit(&v->vs, device);
 }
