@@ -3,8 +3,7 @@
 
 #include <vulkan/vulkan.h>
 
-#include "../../vkhelper/include/framebuffer.h"
-#include "../../vkhelper/include/scsi.h"
+#include "../../vkhelper/include/vkhelper.h"
 #include "../../vkhelper2/include/vkhelper2.h"
 #include "../../vkstatic/include/vkstatic.h"
 

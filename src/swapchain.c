@@ -1,9 +1,8 @@
 #include <vulkan/vulkan.h>
 
-#include "../../vkhelper/include/framebuffer.h"
-#include "../../vkhelper/include/scsi.h"
-#include "../../vkstatic/include/vkstatic.h"
+#include "../../vkhelper/include/vkhelper.h"
 #include "../../vkhelper2/include/vkhelper2.h"
+#include "../../vkstatic/include/vkstatic.h"
 #include "../include/swapchain.h"
 
 static VkhelperFramebufferImage* vkbasic_framebuffer(

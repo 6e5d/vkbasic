@@ -1,9 +1,6 @@
-#include <assert.h>
-#include <stdint.h>
-#include <stdlib.h>
 #include <vulkan/vulkan.h>
 
-#include "../../vkhelper/include/semaphore.h"
+#include "../../vkhelper/include/vkhelper.h"
 #include "../../vkstatic/include/vkstatic.h"
 #include "../include/swapchain.h"
 #include "../include/vkbasic.h"

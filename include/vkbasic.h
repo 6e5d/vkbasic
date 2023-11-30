@@ -1,7 +1,6 @@
-#ifndef INCLUDEGUARD_VKBASIC_VKBASICH
-#define INCLUDEGUARD_VKBASIC_VKBASICH
+#ifndef INCLUDEGUARD_VKBASIC
+#define INCLUDEGUARD_VKBASIC
 
-#include <stdint.h>
 #include <vulkan/vulkan.h>
 #include <wayland-client.h>
 
