@@ -4,36 +4,44 @@
 #include <vulkan/vulkan.h>
 #include <wayland-client.h>
 
-#include "../../vkstatic/include/vkstatic.h"
-#include "../include/swapchain.h"
+#include "../../vkhelper/build/vkhelper.h"
+#include "../../vkhelper2/build/vkhelper2.h"
+#include "../../vkstatic/build/vkstatic.h"
 
 typedef struct {
-	Vkhelper2Image depthstencil;
-	VkbasicSwapchain vs;
+	VkSwapchainKHR swapchain;
+	uint32_t image_count;
+	Vkhelper(FramebufferImage)* elements;
+	Vkhelper2(Image) depth;
+} Vkbasic(Swapchain);
+
+typedef struct {
+	Vkhelper2(Image) depthstencil;
+	Vkbasic(Swapchain) vs;
 	VkSemaphore image_available;
 	VkSemaphore render_finished;
 	VkFence fence;
-} Vkbasic;
+} Vkbasic();
 
-void vkbasic_init(Vkbasic* v, VkDevice device);
-void vkbasic_swapchain_update(
-	Vkbasic* v,
-	Vkstatic* vks,
+void vkbasic(init)(Vkbasic()* v, VkDevice device);
+void vkbasic(swapchain_update)(
+	Vkbasic()* v,
+	Vkstatic()* vks,
 	VkRenderPass renderpass,
 	uint32_t width,
 	uint32_t height
 );
-void vkbasic_present(
-	Vkbasic* vb,
+void vkbasic(present)(
+	Vkbasic()* vb,
 	VkQueue queue,
-	const uint32_t* index
+	uint32_t* index
 );
-void vkbasic_submit(
-	Vkbasic* vb,
+void vkbasic(submit)(
+	Vkbasic()* vb,
 	VkQueue queue,
 	VkCommandBuffer cbuf
 );
-VkFramebuffer vkbasic_next_index(Vkbasic* vb, VkDevice device, uint32_t* index);
-void vkbasic_deinit(Vkbasic* v, VkDevice device);
+VkFramebuffer vkbasic(next_index)(Vkbasic()* vb, VkDevice device, uint32_t* index);
+void vkbasic(deinit)(Vkbasic()* v, VkDevice device);
 
 #endif
