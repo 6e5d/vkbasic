@@ -1,7 +1,7 @@
 #include <vulkan/vulkan.h>
 
 #include "../include/vkbasic.h"
-#define e10 10000000000
+const static uint64_t e10 = 10000000000;
 
 static Vkhelper(FramebufferImage)* vkbasic(framebuffer)(
 	VkDevice device,

@@ -1,6 +1,3 @@
-#ifndef INCLUDEGUARD_VKBASIC
-#define INCLUDEGUARD_VKBASIC
-
 #include <vulkan/vulkan.h>
 #include <wayland-client.h>
 
@@ -43,5 +40,3 @@ void vkbasic(submit)(
 );
 VkFramebuffer vkbasic(next_index)(Vkbasic()* vb, VkDevice device, uint32_t* index);
 void vkbasic(deinit)(Vkbasic()* v, VkDevice device);
-
-#endif
